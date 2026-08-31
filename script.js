@@ -8,6 +8,12 @@
 
 const QUIET_ZONE_MODULES = 4; // standard QR "quiet zone" border, in modules
 
+// ---------- copyright year ----------
+// always shows the current year, computed fresh on each page load.
+function copyrightLine() {
+  return `© Andy Kim, ${new Date().getFullYear()}. All rights reserved.`;
+}
+
 // ---------- i18n ----------
 const I18N = {
   ko: {
@@ -99,6 +105,7 @@ const emptyHint = document.getElementById('emptyHint');
 const downloadPngBtn = document.getElementById('downloadPngBtn');
 const downloadSvgBtn = document.getElementById('downloadSvgBtn');
 const contactEmailLink = document.getElementById('contactEmailLink');
+const copyrightText = document.getElementById('copyrightText');
 
 // ---------- i18n apply ----------
 function applyStaticI18n() {
@@ -302,5 +309,6 @@ downloadSvgBtn.addEventListener('click', () => {
 // ---------- init ----------
 applyStaticI18n();
 renderContactEmail();
+copyrightText.textContent = copyrightLine();
 setEcc(state.ecc);
 renderCanvas();
