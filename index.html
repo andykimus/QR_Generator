@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="pageTitle">다이렉트 QR코드 생성기</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔳</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="lang-switch" id="langSwitch">
+  <button type="button" class="lang-btn" data-lang="ko">한국어</button>
+  <button type="button" class="lang-btn" data-lang="en">English</button>
+</div>
+
+<header class="page-header">
+  <h1><span data-i18n="appTitle">다이렉트 QR코드 생성기</span></h1>
+  <p class="subtitle" data-i18n="tagline">중간 리다이렉트 없이, 입력한 링크를 QR코드에 그대로 담아요</p>
+</header>
+
+<main>
+
+  <section class="card" id="step1">
+    <h2><span class="step-num">1</span> <span data-i18n="step1_title">링크 또는 텍스트</span></h2>
+    <input type="text" id="contentInput" class="text-input" data-i18n-placeholder="contentPlaceholder" placeholder="https://example.com">
+    <p class="hint direct-note" data-i18n="directNote">입력한 내용이 QR코드에 직접 인코딩돼요. 외부 단축 서비스를 거치지 않기 때문에, 그 서비스가 사라져도 이 QR코드는 계속 작동해요.</p>
+    <p class="hint error-hint" id="errorHint"></p>
+  </section>
+
+  <section class="card" id="step2">
+    <h2><span class="step-num">2</span> <span data-i18n="step2_title">다운로드 크기</span></h2>
+    <div class="preset-group" id="sizeGroup">
+      <label class="preset-option">
+        <input type="radio" name="size" value="512">
+        <span><span data-i18n="sizeWeb_label">512 × 512</span><br><small data-i18n="sizeWeb_sub">웹/화면용</small></span>
+      </label>
+      <label class="preset-option">
+        <input type="radio" name="size" value="1024" checked>
+        <span><span data-i18n="sizePrint_label">1024 × 1024</span><br><small data-i18n="sizePrint_sub">인쇄물 권장</small></span>
+      </label>
+      <label class="preset-option">
+        <input type="radio" name="size" value="custom">
+        <span><span data-i18n="sizeCustom_label">직접 입력</span><br><small data-i18n="sizeCustom_sub">픽셀(px) 직접 지정</small></span>
+      </label>
+    </div>
+    <div class="row" id="customSizeRow" style="display:none;">
+      <label for="customSize" data-i18n="customSizeLabel">크기(px):</label>
+      <input type="number" id="customSize" min="128" max="2048" step="8" value="1024">
+    </div>
+  </section>
+
+  <section class="card" id="step3">
+    <h2><span class="step-num">3</span> <span data-i18n="step3_title">색상 및 오류 복원력</span></h2>
+    <div class="row">
+      <label class="color-field">
+        <span data-i18n="fgColorLabel">전경색</span>
+        <input type="color" id="fgColor" value="#000000">
+      </label>
+      <label class="color-field">
+        <span data-i18n="bgColorLabel">배경색</span>
+        <input type="color" id="bgColor" value="#ffffff">
+      </label>
+    </div>
+    <div class="row" id="eccGroup">
+      <span class="unit" data-i18n="eccLabel">오류 복원력:</span>
+      <button type="button" class="ecc-btn" data-ecc="L">L</button>
+      <button type="button" class="ecc-btn" data-ecc="M">M</button>
+      <button type="button" class="ecc-btn" data-ecc="Q">Q</button>
+      <button type="button" class="ecc-btn" data-ecc="H">H</button>
+    </div>
+    <p class="hint" data-i18n="eccHint">QR코드 일부가 가려지거나 손상돼도 인식되게 하는 여유분이에요. 값이 높을수록 복원력은 좋아지지만 패턴이 조금 더 촘촘해져요.</p>
+  </section>
+
+  <section class="card" id="step4">
+    <h2><span class="step-num">4</span> <span data-i18n="step4_title">미리보기 및 다운로드</span></h2>
+    <div class="qr-preview-wrap">
+      <canvas id="qrCanvas"></canvas>
+      <p class="hint" id="emptyHint" data-i18n="emptyHint">위에 링크나 텍스트를 입력하면 QR코드가 여기에 나타나요.</p>
+    </div>
+    <div class="dl-row">
+      <button id="downloadPngBtn" class="download-btn" data-i18n="downloadPngBtn" disabled>PNG로 다운로드</button>
+      <button id="downloadSvgBtn" class="download-btn secondary" data-i18n="downloadSvgBtn" disabled>SVG로 다운로드</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  <div class="legal-group">
+    <p class="legal" data-i18n="footer_ai">본 서비스는 인공지능으로 제작되었습니다. 일부 기능이 정상적으로 동작하지 않을 수 있습니다.</p>
+    <p class="legal" data-i18n="footer_privacy">본 서비스는 외부 서버 없이 사용자의 클라이언트에서 동작하도록 설계되었으며, 개인정보 및 쿠키를 활용하지 않습니다.</p>
+  </div>
+  <div class="meta-group">
+    <p class="contact"><span data-i18n="footer_contactLabel">피드백/기타 문의:</span> <a id="contactEmailLink" href="#" rel="nofollow noopener"></a></p>
+    <p class="copyright">© Andy Kim, 2026. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="vendor/qrcode.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
